@@ -1,6 +1,9 @@
-# GalapagosP5 v1.0
+# GalapagosP5
 
 GalapagosP5 is a library of Evolutionary Algorithms for Processing.
+
+THIS IS A DEVELOPING LIBRARY
+Release date: 10 August 2015
 
 ### Evolutionary Algorithms
 
@@ -23,5 +26,13 @@ Darwin studied the endemic species that led him to establish his theory.
 
 This library, at the moment, covers only Genetic Algorithms.
 
+### Contribute
+
+If you want to contribute with this library, please send me an email
+to diegoa.montesinos@gmail.com .
+
+### Author
+
 Diego Montesinos, 2015.
+
 http://github.com/diegoMontesinos
