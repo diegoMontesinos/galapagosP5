@@ -1,7 +1,7 @@
 package galapagos.genetic.algorithm.crossover;
 
-import galapagos.genetic.Sample;
-import galapagos.genetic.algorithm.SampleGeneticAlgorithm;
+import galapagos.genetic.DNA;
+import galapagos.genetic.algorithm.DNAGeneticAlgorithm;
 import galapagos.genetic.CrossoverMethod;
 import java.util.Random;
 import java.util.Arrays;
@@ -16,9 +16,9 @@ public class KPointsCrossover implements CrossoverMethod {
 		this.rand = new Random();
 	}
 
-	public Object crossover(Sample mate1, Sample mate2) {
-		String genMate1 = ((SampleGeneticAlgorithm) mate1).getGenotype();
-		String genMate2 = ((SampleGeneticAlgorithm) mate2).getGenotype();
+	public Object crossover(DNA mate1, DNA mate2) {
+		String genMate1 = ((DNAGeneticAlgorithm) mate1).getGenotype();
+		String genMate2 = ((DNAGeneticAlgorithm) mate2).getGenotype();
 
 		int[] crossPoints = new int[this.kPoints];
 		for (int i = 0; i < this.kPoints; i++) {

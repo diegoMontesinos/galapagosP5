@@ -1,13 +1,13 @@
 package galapagos.genetic.selection;
 
-import galapagos.genetic.Sample;
+import galapagos.genetic.DNA;
 
 public class NietzscheMethod implements SelectionMethod {
 
-	public Sample[][] select(Sample[] population, double populationFitness, boolean minimize) {
+	public DNA[][] select(DNA[] population, double populationFitness, boolean minimize) {
 
 		int nCouples = population.length % 2 == 0 ? (population.length / 2) : (population.length / 2) + 1;
-		Sample[][] mating = new Sample[nCouples][2];
+		DNA[][] mating = new DNA[nCouples][2];
 
 		for (int i = 0; i < nCouples; i++) {
 			int mate1 = (i * 2) % population.length;

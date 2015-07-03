@@ -1,6 +1,6 @@
 package galapagos.genetic.selection;
 
-import galapagos.genetic.Sample;
+import galapagos.genetic.DNA;
 import java.util.Random;
 
 public class TournamentMethod implements SelectionMethod {
@@ -13,9 +13,9 @@ public class TournamentMethod implements SelectionMethod {
 		this.kTournaments = kTournaments;
 	}
 
-	public Sample[][] select(Sample[] population, double populationFitness, boolean minimize) {
+	public DNA[][] select(DNA[] population, double populationFitness, boolean minimize) {
 		int nCouples = population.length % 2 == 0 ? (population.length / 2) : (population.length / 2) + 1;
-		Sample[][] mating = new Sample[nCouples][2];
+		DNA[][] mating = new DNA[nCouples][2];
 
 		for (int i = 0; i < nCouples; i++) {
 			for (int j = 0; j < 2; j++) {
@@ -26,15 +26,15 @@ public class TournamentMethod implements SelectionMethod {
 		return mating;
 	}
 
-	private Sample tournament(Sample[] population, boolean minimize) {
-		Sample[] contenders = new Sample[this.kTournaments];
+	private DNA tournament(DNA[] population, boolean minimize) {
+		DNA[] contenders = new DNA[this.kTournaments];
 		for (int i = 0; i < contenders.length; i++) {
 			int indRandom = ((int) Math.floor(rand.nextDouble() * ((double) population.length)));
 			contenders[i] = population[indRandom];
 		}
 
 		double bestFitness = minimize ? Double.POSITIVE_INFINITY : Double.NEGATIVE_INFINITY;
- 		Sample winner = null;
+ 		DNA winner = null;
 
  		for (int i = 0; i < contenders.length; i++) {
  			boolean bestFound = minimize ? (bestFitness > contenders[i].getFitness()) : (bestFitness < contenders[i].getFitness());

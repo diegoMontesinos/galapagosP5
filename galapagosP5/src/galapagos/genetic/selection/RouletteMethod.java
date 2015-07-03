@@ -1,6 +1,6 @@
 package galapagos.genetic.selection;
 
-import galapagos.genetic.Sample;
+import galapagos.genetic.DNA;
 import java.util.Random;
 
 public class RouletteMethod implements SelectionMethod {
@@ -11,7 +11,7 @@ public class RouletteMethod implements SelectionMethod {
 		this.rand = new Random();
 	}
 
-	public Sample[][] select(Sample[] population, double populationFitness, boolean minimize) {
+	public DNA[][] select(DNA[] population, double populationFitness, boolean minimize) {
 
 		double[] selectionProbs = new double[population.length];
 		if(minimize) {
@@ -33,7 +33,7 @@ public class RouletteMethod implements SelectionMethod {
 		}
 
 		int nCouples = population.length % 2 == 0 ? (population.length / 2) : (population.length / 2) + 1;
-		Sample[][] mating = new Sample[nCouples][2];
+		DNA[][] mating = new DNA[nCouples][2];
 
 		double roulette;
 		for (int i = 0; i < nCouples; i++) {

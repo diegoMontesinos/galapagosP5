@@ -1,4 +1,4 @@
-package galapagos.genetic.algorithm.codification;
+package galapagos.genetic.codification;
 
 public class GrayFixedPoint extends FixedPoint implements CodificationMethod {
 

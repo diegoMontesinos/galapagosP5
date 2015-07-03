@@ -1,6 +1,6 @@
-# GalapagosP5
+# GalapagosP5 v1.0
 
-GalapagosP5 v1.0 is a library of Evolutionary Algorithms for Processing.
+GalapagosP5 is a library of Evolutionary Algorithms for Processing.
 
 ### Evolutionary Algorithms
 

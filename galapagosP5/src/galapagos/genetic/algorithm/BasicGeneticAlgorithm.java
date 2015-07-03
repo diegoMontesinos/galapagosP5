@@ -1,15 +1,13 @@
 package galapagos.genetic.algorithm;
 
-import galapagos.genetic.Sample;
+import galapagos.genetic.*;
+import galapagos.genetic.codification.CodificationMethod;
 import galapagos.genetic.selection.SelectionMethod;
 import galapagos.genetic.selection.RouletteMethod;
-import galapagos.genetic.CrossoverMethod;
 import galapagos.genetic.algorithm.crossover.KPointsCrossover;
-import galapagos.genetic.algorithm.codification.CodificationMethod;
-import galapagos.genetic.MutationMethod;
 import java.util.Random;
-import java.util.Comparator;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.LinkedList;
 
 public abstract class BasicGeneticAlgorithm {
@@ -19,13 +17,13 @@ public abstract class BasicGeneticAlgorithm {
 
 	// Variables de poblacion
 	public int nPopulation;
-	public SampleGeneticAlgorithm[] population;
+	public DNAGeneticAlgorithm[] population;
 
 	// Método de codificacion
 	private CodificationMethod codificationMethod;
 
 	// Comparador de individuos
-	private Comparator<SampleGeneticAlgorithm> comparatorSample;
+	private Comparator<DNAGeneticAlgorithm> comparatorDNA;
 
 	// Operador de seleccion
 	private SelectionMethod selectionMethod;
@@ -42,10 +40,10 @@ public abstract class BasicGeneticAlgorithm {
 
 	// Elitismo
 	private int elitism;
-	private LinkedList<SampleGeneticAlgorithm> elite;
+	private LinkedList<DNAGeneticAlgorithm> elite;
 
 	// Estadisticos poblacional
-	private SampleGeneticAlgorithm bestSample;
+	private DNAGeneticAlgorithm bestSample;
 	private double avgFitness;
 
 	public BasicGeneticAlgorithm(int nPopulation, boolean minimize) {
@@ -54,8 +52,8 @@ public abstract class BasicGeneticAlgorithm {
 
 		this.rand = new Random();
 
-		this.comparatorSample = new Comparator<SampleGeneticAlgorithm>() {
-			public int compare(SampleGeneticAlgorithm o1, SampleGeneticAlgorithm o2) {
+		this.comparatorDNA = new Comparator<DNAGeneticAlgorithm>() {
+			public int compare(DNAGeneticAlgorithm o1, DNAGeneticAlgorithm o2) {
 				if (o1.getFitness() < o2.getFitness()) {
 					return -1;
 				}
@@ -74,7 +72,7 @@ public abstract class BasicGeneticAlgorithm {
 		this.crossProb = 0.9;
 
 		this.elitism = 0;
-		this.elite = new LinkedList<SampleGeneticAlgorithm>();
+		this.elite = new LinkedList<DNAGeneticAlgorithm>();
 	}
 
 	public abstract void generateInitialPopulation();
@@ -86,8 +84,8 @@ public abstract class BasicGeneticAlgorithm {
 		// Califica a toda la población actual
 		double populationFitness = 0.0;
 		for (int i = 0; i < this.nPopulation; i++) {
-			SampleGeneticAlgorithm sample = this.population[i];
-			Object fenotype = sample.getFenotype(this.codificationMethod);
+			DNAGeneticAlgorithm sample = this.population[i];
+			Object fenotype = sample.getPhenotype(this.codificationMethod);
 			double sampleFitness = fitness(fenotype);
 
 			sample.setFitness(sampleFitness);
@@ -97,20 +95,20 @@ public abstract class BasicGeneticAlgorithm {
 		return populationFitness;
 	}
 
-	public SampleGeneticAlgorithm[][] selection(double populationFitness) {
+	public DNAGeneticAlgorithm[][] selection(double populationFitness) {
 
 		// Poblacion a trabajar
-		SampleGeneticAlgorithm[] workPopulation = null;
+		DNAGeneticAlgorithm[] workPopulation = null;
 
 		// Si hay elitismo se prepara la poblacion a trabajar
 		if(this.elitism > 0) {
-			workPopulation = new SampleGeneticAlgorithm[this.nPopulation + this.elite.size()];
+			workPopulation = new DNAGeneticAlgorithm[this.nPopulation + this.elite.size()];
 
 			System.arraycopy(this.population, 0, workPopulation, 0, this.nPopulation);
 			System.arraycopy(this.elite.toArray(), 0, workPopulation, this.nPopulation, this.elite.size());
 
 			for (int i = 0; i < this.elite.size(); i++) {
-				SampleGeneticAlgorithm sample = this.elite.get(i);
+				DNAGeneticAlgorithm sample = this.elite.get(i);
 				populationFitness += sample.getFitness();
 			}
 		} else {
@@ -118,34 +116,34 @@ public abstract class BasicGeneticAlgorithm {
 		}
 
 		// Ordenamos la poblacion con un comparador dado por su fitness
-		Arrays.sort(workPopulation, this.comparatorSample);
+		Arrays.sort(workPopulation, this.comparatorDNA);
 
 		// Usa el metodo de seleccion obteniendo las parejas de individuos
-		Sample[][] selection = this.selectionMethod.select(workPopulation, populationFitness, this.minimize);
+		DNA[][] selection = this.selectionMethod.select(workPopulation, populationFitness, this.minimize);
 
-		// Forzar el cast Sample a SampleGeneticAlgorithm
-		SampleGeneticAlgorithm[][] couples = new SampleGeneticAlgorithm[selection.length][2];
+		// Forzar el cast Sample a DNAGeneticAlgorithm
+		DNAGeneticAlgorithm[][] couples = new DNAGeneticAlgorithm[selection.length][2];
 		for (int i = 0; i < selection.length; i++) {
-			couples[i][0] = (SampleGeneticAlgorithm) selection[i][0];
-			couples[i][1] = (SampleGeneticAlgorithm) selection[i][1];
+			couples[i][0] = (DNAGeneticAlgorithm) selection[i][0];
+			couples[i][1] = (DNAGeneticAlgorithm) selection[i][1];
 		}
 
 		// Regresa a las parejas
 		return couples;
 	}
 
-	public SampleGeneticAlgorithm[] crossover(SampleGeneticAlgorithm[][] couples) {
+	public DNAGeneticAlgorithm[] crossover(DNAGeneticAlgorithm[][] couples) {
 
-		SampleGeneticAlgorithm[] newPopulation = new SampleGeneticAlgorithm[this.nPopulation];
+		DNAGeneticAlgorithm[] newPopulation = new DNAGeneticAlgorithm[this.nPopulation];
 		for (int i = 0, j = 0; j < this.nPopulation; i++, j += 2) {
 
 			// Tomamos la pareja actual
-			SampleGeneticAlgorithm[] couple = couples[i % couples.length];
+			DNAGeneticAlgorithm[] couple = couples[i % couples.length];
 
 			// Echamos un volado para la cruza
 			if(rand.nextDouble() <= crossProb) {
 				// Los cruzamos
-				SampleGeneticAlgorithm[] sons = (SampleGeneticAlgorithm[]) couple[0].crossover(couple[1], this.crossoverMethod);
+				DNAGeneticAlgorithm[] sons = (DNAGeneticAlgorithm[]) couple[0].crossover(couple[1], this.crossoverMethod);
 
 				// Pasamos a sus hijos
 				newPopulation[j % newPopulation.length] = sons[0];
@@ -172,12 +170,12 @@ public abstract class BasicGeneticAlgorithm {
 		/************************
 		 * OPERADOR - SELECCIÓN *
 		 ************************/
-		SampleGeneticAlgorithm[][] couples = selection(populationFitness);
+		DNAGeneticAlgorithm[][] couples = selection(populationFitness);
 
 		/********************
 		 * OPERADOR - CRUZA *
 		 ********************/
-		SampleGeneticAlgorithm[] newPopulation = crossover(couples);
+		DNAGeneticAlgorithm[] newPopulation = crossover(couples);
 
 		/***********************
 		 * OPERADOR - MUTACION *
@@ -194,8 +192,8 @@ public abstract class BasicGeneticAlgorithm {
 		this.codificationMethod = codificationMethod;
 	}
 
-	public void setComparator(Comparator<SampleGeneticAlgorithm> comparatorSample) {
-		this.comparatorSample = comparatorSample;
+	public void setComparator(Comparator<DNAGeneticAlgorithm> comparatorDNA) {
+		this.comparatorDNA = comparatorDNA;
 	}
 
 	public void setSelectionMethod(SelectionMethod selectionMethod) {
@@ -214,8 +212,8 @@ public abstract class BasicGeneticAlgorithm {
 		return this.codificationMethod;
 	}
 
-	public Comparator<SampleGeneticAlgorithm> getComparator() {
-		return this.comparatorSample;
+	public Comparator<DNAGeneticAlgorithm> getComparator() {
+		return this.comparatorDNA;
 	}
 
 	public SelectionMethod getSelectionMethod() {
@@ -236,12 +234,12 @@ public abstract class BasicGeneticAlgorithm {
 
 	private void updateElite() {
 
-		SampleGeneticAlgorithm bestOfGen = null;
+		DNAGeneticAlgorithm bestOfGen = null;
 		double bestFitness = this.minimize ? Double.POSITIVE_INFINITY : Double.NEGATIVE_INFINITY;
 
 		double sum = 0.0;
 		for (int i = 0; i < this.nPopulation; i++) {
-			SampleGeneticAlgorithm sample = this.population[i];
+			DNAGeneticAlgorithm sample = this.population[i];
 			double sampleFitness = sample.getFitness();
 
 			sum += sampleFitness;
@@ -269,9 +267,9 @@ public abstract class BasicGeneticAlgorithm {
 		}
 	}
 
-	private int worstEliteElem(SampleGeneticAlgorithm sample) {
+	private int worstEliteElem(DNAGeneticAlgorithm sample) {
 		for (int i = 0; i < this.elite.size(); i++) {
-			SampleGeneticAlgorithm eliteElem = this.elite.get(i);
+			DNAGeneticAlgorithm eliteElem = this.elite.get(i);
 			boolean isBest = this.minimize ? (eliteElem.getFitness() > sample.getFitness()) : (eliteElem.getFitness() < sample.getFitness());
 
 			if(isBest) {
@@ -286,7 +284,7 @@ public abstract class BasicGeneticAlgorithm {
 	 * Método: bestSample
 	 *   Regresa el mejor individuo de la generacion actual.
 	 */
-	public SampleGeneticAlgorithm bestSample() {
+	public DNAGeneticAlgorithm bestSample() {
 		return this.bestSample;
 	}
 
@@ -299,7 +297,7 @@ public abstract class BasicGeneticAlgorithm {
 	}
 
 	public Object bestFenotype() {
-		return this.bestSample.getFenotype(this.codificationMethod);
+		return this.bestSample.getPhenotype(this.codificationMethod);
 	}
 
 	/* 
