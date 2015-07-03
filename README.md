@@ -2,7 +2,9 @@
 
 GalapagosP5 is a library of Evolutionary Algorithms for Processing.
 
-THIS IS A DEVELOPING LIBRARY
+WARNING:
+THIS IS A DEVELOPING LIBRARY!
+
 Release date: 10 August 2015
 
 ### Evolutionary Algorithms
