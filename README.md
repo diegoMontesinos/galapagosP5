@@ -8,9 +8,7 @@ Evolutionary Algorithms form a subfield of Artificial Intelligence
 called Evolutionary Computing that is based on Charles Darwin theory
 of evolution by Natural Selection.
 
-The idea of the Evolutionary Algorithms is improving a population
-of possible solutions for a given problem.
-
+The idea of the Evolutionary Algorithms is improving a population of possible solutions for a given problem.
 Every possible solution (Sample) have characteristics that make it unique.
 Each step, all samples are evaluated and determined the level of fitness
 for solve the problem. The best-fitness samples are selected for generate
