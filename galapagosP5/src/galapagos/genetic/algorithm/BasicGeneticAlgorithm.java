@@ -208,6 +208,10 @@ public abstract class BasicGeneticAlgorithm {
 		this.crossProb = crossProb;
 	}
 
+	public void setMutationMethod(MutationMethod mutationMethod) {
+		this.mutationMethod = mutationMethod;
+	}
+
 	public CodificationMethod getCodificationMethod() {
 		return this.codificationMethod;
 	}
